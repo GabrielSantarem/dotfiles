@@ -32,6 +32,7 @@ It will **not** auto-attach when:
 - shell is non-interactive
 - `TERM=dumb`
 - `fish_private_mode` is set
+- `DISABLE_AUTO_ZELLIJ=1` is set
 
 ## Useful aliases
 
@@ -83,6 +84,14 @@ Prompt files:
 - `gitroot` → jump to current git root
 - `hxhere` → open current directory in Helix
 - `please` → rerun previous command with `sudo`
+
+### Plain Fish without Zellij
+
+```sh
+env DISABLE_AUTO_ZELLIJ=1 fish
+```
+
+To force a plain shell without `zellij` auto-attach, use:
 
 ## Main files
 
