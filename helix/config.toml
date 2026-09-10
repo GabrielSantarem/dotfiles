@@ -1,0 +1,102 @@
+theme = "carbon-green"
+
+[editor]
+line-number = "relative"
+mouse = true
+default-yank-register = "+"
+cursorline = true
+auto-completion = true
+path-completion = true
+auto-format = true
+completion-timeout = 5
+preview-completion-insert = true
+completion-trigger-len = 1
+bufferline = "never"
+color-modes = false
+end-of-line-diagnostics = "disable"
+true-color = true
+
+[editor.statusline]
+left = ["mode", "spacer", "file-name"]
+center = []
+right = ["position", "file-type"]
+separator = "·"
+mode.normal = "N"
+mode.insert = "I"
+mode.select = "S"
+
+[editor.lsp]
+enable = true
+display-messages = false
+display-progress-messages = false
+auto-signature-help = true
+display-inlay-hints = true
+snippets = true
+
+[editor.cursor-shape]
+normal = "block"
+insert = "bar"
+select = "underline"
+
+[editor.auto-save]
+focus-lost = true
+after-delay.enable = true
+after-delay.timeout = 3000
+
+[editor.whitespace.render]
+space = "none"
+nbsp = "none"
+nnbsp = "none"
+tab = "none"
+newline = "none"
+
+[editor.whitespace.characters]
+space = "·"
+nbsp = "⍽"
+nnbsp = "␣"
+tab = "→"
+newline = "⏎"
+tabpad = "·"
+
+[editor.indent-guides]
+render = true
+character = "▏"
+skip-levels = 1
+
+[editor.inline-diagnostics]
+cursor-line = "disable"
+other-lines = "disable"
+
+[keys.normal]
+C-s = ":write"
+C-q = ":quit"
+C-S-q = ":quit-all!"
+C-r = ":config-reload"
+C-space = "completion"
+C-h = "jump_view_left"
+C-j = "jump_view_down"
+C-k = "jump_view_up"
+C-l = "jump_view_right"
+A-j = ["extend_to_line_bounds", "delete_selection", "paste_after"]
+A-k = ["extend_to_line_bounds", "delete_selection", "move_line_up", "paste_before"]
+"C-," = "goto_previous_buffer"
+"C-." = "goto_next_buffer"
+
+[keys.insert]
+C-space = "completion"
+C-s = ":write"
+C-q = "normal_mode"
+j = { k = "normal_mode" }
+
+[keys.normal.space]
+w = ":write"
+q = ":quit"
+b = ":buffer-close"
+r = ":config-reload"
+
+[keys.select]
+C-space = "completion"
+C-s = ":write"
+C-q = "normal_mode"
+A-j = ["extend_to_line_bounds", "delete_selection", "paste_after"]
+A-k = ["extend_to_line_bounds", "delete_selection", "move_line_up", "paste_before"]

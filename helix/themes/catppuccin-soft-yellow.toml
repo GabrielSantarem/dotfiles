@@ -1,0 +1,27 @@
+inherits = "catppuccin_mocha"
+
+"ui.cursorline.primary" = { bg = "cursorline" }
+"ui.selection" = { bg = "surface0" }
+"ui.linenr.selected" = { fg = "yellow", modifiers = ["bold"] }
+"ui.statusline.normal" = { fg = "base", bg = "yellow", modifiers = ["bold"] }
+"ui.statusline.insert" = { fg = "base", bg = "peach", modifiers = ["bold"] }
+"ui.statusline.select" = { fg = "base", bg = "gold", modifiers = ["bold"] }
+"ui.popup" = { fg = "text", bg = "mantle" }
+"ui.help" = { fg = "subtext1", bg = "mantle" }
+"ui.menu.selected" = { fg = "base", bg = "yellow" }
+"ui.text.focus" = { fg = "text", bg = "surface0", modifiers = ["bold"] }
+"ui.virtual.inlay-hint" = { fg = "subtext0" }
+"diagnostic.hint" = { underline = { color = "gold", style = "line" } }
+"diff.plus" = "green"
+"diff.delta" = "yellow"
+
+"attribute" = "gold"
+"keyword" = "yellow"
+"tag" = "peach"
+"constructor" = "sapphire"
+"function" = "yellow"
+"special" = "gold"
+
+[palette]
+gold = "#e5c890"
+cursorline = "#2b2734"

@@ -1,0 +1,21 @@
+inherits = "carbon"
+
+"ui.cursorline.primary" = { bg = "#1f3a2c" }
+"ui.selection" = { bg = "#1c4a34" }
+"ui.linenr.selected" = { fg = "#78dba9", modifiers = ["bold"] }
+"ui.statusline.normal" = { fg = "#161616", bg = "#78dba9", modifiers = ["bold"] }
+"ui.statusline.insert" = { fg = "#161616", bg = "#42be65", modifiers = ["bold"] }
+"ui.statusline.select" = { fg = "#161616", bg = "#6fdc8c", modifiers = ["bold"] }
+"ui.bufferline.active" = { fg = "#78dba9", modifiers = ["bold"] }
+"ui.popup" = { bg = "#121212" }
+"ui.help" = { bg = "#121212" }
+"ui.menu.selected" = { fg = "#161616", bg = "#78dba9" }
+"ui.text.focus" = { fg = "#78dba9", modifiers = ["bold"] }
+"ui.virtual.inlay-hint" = { fg = "#5ea67a" }
+"diagnostic.hint" = { underline = { color = "#42be65", style = "line" } }
+"diff.plus" = "#42be65"
+
+"attribute" = "#78dba9"
+"keyword" = "#6fdc8c"
+"tag" = "#42be65"
+"constructor" = "#8fe6b2"

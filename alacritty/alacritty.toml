@@ -1,0 +1,127 @@
+[env]
+TERM = "xterm-256color"
+
+[window]
+padding = { x = 6, y = 6 }
+dynamic_padding = true
+opacity = 1.0
+blur = false
+startup_mode = "Windowed"
+title = "Terminal"
+dynamic_title = false
+
+[scrolling]
+history = 10000
+multiplier = 2
+
+[font]
+size = 11.0
+builtin_box_drawing = true
+
+[font.normal]
+family = "FiraCode Nerd Font"
+style = "Regular"
+
+[font.bold]
+family = "FiraCode Nerd Font"
+style = "Bold"
+
+[font.italic]
+family = "FiraCode Nerd Font"
+style = "Italic"
+
+[font.bold_italic]
+family = "FiraCode Nerd Font"
+style = "Bold Italic"
+
+[selection]
+save_to_clipboard = true
+
+[cursor]
+style = { shape = "Block", blinking = "Off" }
+unfocused_hollow = true
+
+[mouse]
+hide_when_typing = true
+
+[colors.primary]
+background = "#0f1115"
+foreground = "#d7dce2"
+dim_foreground = "#9aa4af"
+bright_foreground = "#f2f4f8"
+
+[colors.cursor]
+text = "#0f1115"
+cursor = "#78dba9"
+
+[colors.vi_mode_cursor]
+text = "#0f1115"
+cursor = "#42be65"
+
+[colors.search.matches]
+foreground = "#0f1115"
+background = "#78dba9"
+
+[colors.search.focused_match]
+foreground = "#0f1115"
+background = "#42be65"
+
+[colors.footer_bar]
+foreground = "#d7dce2"
+background = "#16181d"
+
+[colors.hints.start]
+foreground = "#0f1115"
+background = "#a6e3a1"
+
+[colors.hints.end]
+foreground = "#d7dce2"
+background = "#1f2933"
+
+[colors.line_indicator]
+foreground = "None"
+background = "None"
+
+[colors.selection]
+text = "#d7dce2"
+background = "#1a2c22"
+
+[colors.normal]
+black = "#1a1d23"
+red = "#ff7b72"
+green = "#42be65"
+yellow = "#f2cc60"
+blue = "#5ea1ff"
+magenta = "#c678dd"
+cyan = "#39c5cf"
+white = "#c9d1d9"
+
+[colors.bright]
+black = "#4b5563"
+red = "#ff938a"
+green = "#78dba9"
+yellow = "#ffe082"
+blue = "#7ab7ff"
+magenta = "#d9a7f0"
+cyan = "#62d6de"
+white = "#f5f7fa"
+
+[colors.dim]
+black = "#13161b"
+red = "#b85c55"
+green = "#2f8f4e"
+yellow = "#b89b46"
+blue = "#3f6fb8"
+magenta = "#8c5da5"
+cyan = "#2c8b91"
+white = "#8b949e"
+
+[keyboard]
+bindings = [
+  { key = "V", mods = "Control|Shift", action = "Paste" },
+  { key = "C", mods = "Control|Shift", action = "Copy" },
+  { key = "N", mods = "Control|Shift", action = "CreateNewWindow" },
+  { key = "Plus", mods = "Control", action = "IncreaseFontSize" },
+  { key = "Minus", mods = "Control", action = "DecreaseFontSize" },
+  { key = "Key0", mods = "Control", action = "ResetFontSize" }
+]

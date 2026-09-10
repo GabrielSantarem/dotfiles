@@ -1,0 +1,7 @@
+# This file contains fish universal variable definitions.
+# VERSION: 3.0
+SETUVAR --export ADB_MDNS:0
+SETUVAR EDITOR:nvim
+SETUVAR __fish_initialized:4300
+SETUVAR fish_greeting:\x1d
+SETUVAR fish_user_paths:/home/tomate/\x2ebun/bin\x1e/home/tomate/Android/Sdk/cmdline\x2dtools/latest/bin\x1e/home/tomate/Android/Sdk/platform\x2dtools\x1e/home/tomate/Android/Sdk/emulator
