@@ -9,21 +9,38 @@ A unified backup repository for my terminal/editor setup.
 - `zellij/`
 - `alacritty/`
 
-## Install
+## Scripts
+
+### Install into `~/.config`
 
 ```sh
 bash scripts/install.sh
 ```
 
-This will copy the configs into `~/.config`.
+Options:
 
-## Sync current local config back into this repo
+```sh
+bash scripts/install.sh --dry-run
+bash scripts/install.sh --no-backup
+bash scripts/install.sh --link
+```
+
+### Sync current local config back into this repo
 
 ```sh
 bash scripts/sync-from-config.sh
+bash scripts/sync-from-config.sh --dry-run
+```
+
+### Validate the repo and local environment
+
+```sh
+bash scripts/doctor.sh
 ```
 
 ## Notes
 
+- Existing configs are backed up by default to `~/.local/state/dotfiles-unified/backups/`.
+- `--link` is useful if you want this repo to become the live source of truth.
 - `helix/` previously had its own Git repository; this unified repo keeps everything in one place.
-- copies are plain files here, without nested `.git` directories.
+- Copies are stored here without nested `.git` directories.
