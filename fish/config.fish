@@ -54,6 +54,7 @@ end
 # -----------------------------
 # Auto-attach only in interactive local terminals, and never when already
 # inside Zellij or when a command was explicitly requested for this shell.
+# Set DISABLE_AUTO_ZELLIJ=1 to launch a plain Fish shell without auto-attach.
 if status is-interactive
     and type -q zellij
     and not set -q ZELLIJ
@@ -61,6 +62,7 @@ if status is-interactive
     and not set -q SSH_TTY
     and test "$TERM" != "dumb"
     and not set -q fish_private_mode
+    and not set -q DISABLE_AUTO_ZELLIJ
     and test (count $argv) -eq 0
     zellij attach -c main
 end
