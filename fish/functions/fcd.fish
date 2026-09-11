@@ -9,7 +9,11 @@ function fcd --description 'Fuzzy cd into a directory using fd and fzf with prev
         return 1
     end
 
-    set -l preview 'if command -v eza >/dev/null 2>&1; then eza --tree --level=2 --icons --group-directories-first {}; else ls -la {}; fi'
+    # fzf runs the preview with $SHELL (fish), so keep it a plain command.
+    set -l preview 'ls -la {}'
+    if type -q eza
+        set preview 'eza --tree --level=2 --icons --group-directories-first {}'
+    end
     set -l dir (fd --type d . $argv | fzf --preview "$preview" --preview-window 'right,60%,border-left')
     if test -n "$dir"
         cd -- "$dir"
