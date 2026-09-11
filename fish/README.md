@@ -82,8 +82,8 @@ Prompt files:
 - `mkcd` → create dir and enter it
 - `ff` → fuzzy file finder with preview
 - `fcd` → fuzzy directory jump with preview
-- `proj` → pick a project; inside `zellij` it opens a new project tab with shell + `hx`, outside it opens `hx .`
-  - set `DISABLE_AUTO_HX=1` to only open the project tab/directory without launching Helix
+- `proj` → pick a project; inside `zellij` it opens the project in a dedicated full-tab `hx .`, outside it opens `hx .`
+  - set `DISABLE_AUTO_HX=1` to open a shell-only project tab / just `cd` instead of launching Helix
 - `gitroot` → jump to current git root
 - `hxhere` → open current directory in Helix
 - `please` → rerun previous command with `sudo`

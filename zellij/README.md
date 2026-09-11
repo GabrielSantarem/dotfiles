@@ -42,16 +42,11 @@ zellij list-sessions    # see what is still alive
 
 ## Project workflow
 
-To avoid losing the whole session when closing an editor pane, prefer opening projects from an interactive shell or with the Fish `proj` helper.
+The Fish `proj` helper (running in the initial `proj` tab) opens the picked project in a **dedicated tab running `hx .` full-tab**:
 
-Inside `zellij`, `proj` now creates a fresh project tab with:
-
-- one shell pane in the project directory
-- one `hx .` pane in the same directory
-
-That means `:quit` in Helix only closes the editor pane, while the tab and shell remain alive.
-
-To open the project tab without auto-launching Helix, set `DISABLE_AUTO_HX=1`.
+- `:quit` in Helix closes the whole tab and drops you back on the `proj` picker tab
+- need a shell in the project? `Alt-f` opens the floating terminal in the project directory
+- set `DISABLE_AUTO_HX=1` to open a shell-only project tab instead of Helix
 
 ## Session recovery
 
@@ -75,6 +70,7 @@ The session starts in **locked** mode by default, so terminal apps like Helix ke
 
 - `Ctrl-g` → enter Zellij control mode
 - `Ctrl-s` → enter scroll mode directly
+- `Alt-f` → toggle floating terminal (stays in locked mode)
 
 ### Normal mode
 

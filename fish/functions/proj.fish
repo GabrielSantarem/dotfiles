@@ -35,15 +35,18 @@ function proj --description 'Open a project workflow with zoxide, Helix, and Zel
 
     if set -q ZELLIJ
         set -l tab_name (basename "$target")
-        set -l tab_id (zellij action new-tab --cwd "$target" --name "$tab_name")
-
-        if test -z "$tab_id"
-            echo 'proj: failed to create zellij tab'
-            return 1
-        end
 
         if test $open_hx = true
-            zellij action new-pane --tab-id "$tab_id" --direction right --cwd "$target" -- hx . >/dev/null
+            # Full-tab Helix; closing it closes the tab and drops back to
+            # the proj picker tab. Use Alt-f for a floating shell meanwhile.
+            zellij action new-tab --cwd "$target" --name "$tab_name" --close-on-exit -- hx . >/dev/null
+        else
+            zellij action new-tab --cwd "$target" --name "$tab_name" >/dev/null
+        end
+
+        if test $status -ne 0
+            echo 'proj: failed to create zellij tab'
+            return 1
         end
     else
         cd -- "$target"
