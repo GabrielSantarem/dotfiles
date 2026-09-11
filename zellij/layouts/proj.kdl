@@ -1,0 +1,17 @@
+layout {
+    default_tab_template {
+        children
+        pane size=1 borderless=true {
+            plugin location="compact-bar"
+        }
+    }
+
+    // Initial tab starts an interactive fish shell that immediately runs
+    // the `proj` project picker. Picking a project opens it in a new tab;
+    // this tab stays around as a plain shell / picker.
+    tab name="proj" {
+        pane command="fish" {
+            args "-C" "proj"
+        }
+    }
+}

@@ -52,9 +52,11 @@ end
 # -----------------------------
 # Zellij auto-start
 # -----------------------------
-# Auto-attach only in interactive local terminals, and never when already
-# inside Zellij or when a command was explicitly requested for this shell.
-# Set DISABLE_AUTO_ZELLIJ=1 to launch a plain Fish shell without auto-attach.
+# Start a fresh Zellij session (clean panes, no old context) in interactive
+# local terminals. The `proj` layout opens straight into the project picker.
+# Accidentally closed terminals leave a detached session you can recover
+# manually with `zellij list-sessions` + `zellij attach <name>`.
+# Set DISABLE_AUTO_ZELLIJ=1 to launch a plain Fish shell without Zellij.
 if status is-interactive
     and type -q zellij
     and not set -q ZELLIJ
@@ -64,7 +66,7 @@ if status is-interactive
     and not set -q fish_private_mode
     and not set -q DISABLE_AUTO_ZELLIJ
     and test (count $argv) -eq 0
-    zellij attach -c main
+    zellij --new-session-with-layout proj
 end
 
 # -----------------------------

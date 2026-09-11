@@ -22,10 +22,12 @@ Short, modular Fish setup focused on a clean interactive workflow.
 On interactive local shells, Fish will run:
 
 ```fish
-zellij attach -c main
+zellij --new-session-with-layout proj
 ```
 
-It will **not** auto-attach when:
+Every terminal starts a **fresh session with clean panes**, opening straight into the `proj` project picker. No old context is restored automatically; if a terminal closed by accident, recover its still-live session with `zellij list-sessions` + `zellij attach <name>`.
+
+It will **not** auto-start when:
 
 - already inside `zellij`
 - running over SSH
@@ -80,7 +82,8 @@ Prompt files:
 - `mkcd` → create dir and enter it
 - `ff` → fuzzy file finder with preview
 - `fcd` → fuzzy directory jump with preview
-- `proj` → pick a project and open it in `hx .`
+- `proj` → pick a project; inside `zellij` it opens a new project tab with shell + `hx`, outside it opens `hx .`
+  - set `DISABLE_AUTO_HX=1` to only open the project tab/directory without launching Helix
 - `gitroot` → jump to current git root
 - `hxhere` → open current directory in Helix
 - `please` → rerun previous command with `sudo`

@@ -19,22 +19,52 @@ Minimal `zellij` setup designed to match Helix + Alacritty + Fish.
 
 - `zellij/config.kdl`
 - `zellij/layouts/default.kdl`
+- `zellij/layouts/proj.kdl`
 - `zellij/config.kdl.pre-minimal-backup`
 
 ## Startup
 
-Default Fish behavior can auto-run:
+Fish auto-runs, on every interactive local terminal:
 
 ```sh
-zellij attach -c main
+zellij --new-session-with-layout proj
 ```
+
+This always starts a **fresh session with clean panes**. The `proj` layout's initial tab runs `fish -C proj`, so the terminal opens straight into the project picker; after picking, the project opens in its own tab and the first tab remains a plain shell.
 
 Manual start:
 
 ```sh
-zellij
-zellij -s main
-zellij attach main
+zellij                  # fresh session, default layout
+zellij attach <name>    # reattach to a detached session
+zellij list-sessions    # see what is still alive
+```
+
+## Project workflow
+
+To avoid losing the whole session when closing an editor pane, prefer opening projects from an interactive shell or with the Fish `proj` helper.
+
+Inside `zellij`, `proj` now creates a fresh project tab with:
+
+- one shell pane in the project directory
+- one `hx .` pane in the same directory
+
+That means `:quit` in Helix only closes the editor pane, while the tab and shell remain alive.
+
+To open the project tab without auto-launching Helix, set `DISABLE_AUTO_HX=1`.
+
+## Session recovery
+
+Context control is fully explicit in this setup:
+
+- **New terminals never restore old context.** Each one starts a fresh session at the `proj` picker.
+- **Session serialization is off** (`session_serialization false` in `config.kdl`), so exited sessions leave no trace and are never resurrected re-running old commands (no "ghost" `hx .` contexts).
+- **Accidental closes are still recoverable, on demand.** Closing a terminal window detaches the session; the Zellij server keeps it alive (including pane contents). Recover it manually:
+
+```sh
+zellij list-sessions       # detached sessions are still alive
+zellij attach <name>       # reattach with full context
+zellij kill-session <name> # or discard it
 ```
 
 ## Core keybinds

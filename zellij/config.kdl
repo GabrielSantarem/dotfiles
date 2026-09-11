@@ -325,7 +325,10 @@ copy_on_select false
 scroll_buffer_size 10000
 scrollback_editor "hx"
 auto_layout true
-session_serialization true
+// Accidental terminal closes are still recovered by attaching to the live
+// background session; serialization is off so *exited* sessions don't get
+// resurrected re-running old commands (ghost `hx .` context).
+session_serialization false
 pane_viewport_serialization false
 styled_underlines true
 osc8_hyperlinks false
