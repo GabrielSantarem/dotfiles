@@ -11,6 +11,7 @@ Short, modular Fish setup focused on a clean interactive workflow.
 - cleaned `config.fish`
 - moved aliases into `conf.d/aliases.fish`
 - added utility functions in `functions/`
+- added media conversion helpers (`ffmpeg` / `imagemagick`)
 - clean `zellij` auto-start with opt-in automation
 - disabled `starship` in favor of a native ultra-minimal Fish prompt
 - reduced prompt UI to the bare minimum
@@ -83,6 +84,8 @@ Prompt files:
 
 ## Useful functions
 
+### General helpers
+
 - `reloadfish` → reload shell config
 - `hxconf` → open Helix config
 - `fishconf` → open Fish config
@@ -94,6 +97,47 @@ Prompt files:
 - `gitroot` → jump to current git root
 - `hxhere` → open current directory in Helix
 - `please` → rerun previous command with `sudo`
+
+### Media manipulation (FFmpeg & ImageMagick)
+
+Simplified wrappers for converting, compressing, and clipping screen recordings and images:
+
+* **`vconv <input> [target_format_or_output]`**: Convert video (e.g., KDE Spectacle / Pipewire `.webm` screen recordings) to universal `.mp4` (`H.264`, `yuv420p`, `AAC`, `+faststart`), ensuring instant playback on Discord, WhatsApp, iOS, Android, and web players.
+  ```sh
+  vconv recording.webm          # produces recording.mp4 (universal H.264/AAC)
+  vconv recording.webm mp4      # equivalent
+  vconv video.mkv output.mp4    # container re-encode
+  vconv video.mp4 webm          # converts to VP9/Opus
+  ```
+* **`vgif <video> [fps] [max_width] [output.gif]`**: Convert video to a high-quality, lightweight GIF using a two-pass palette algorithm (`palettegen` + `paletteuse`).
+  ```sh
+  vgif recording.webm           # produces recording.gif (15 fps, max 720px)
+  vgif recording.mp4 20 1080    # 20 fps, max 1080px width
+  ```
+* **`vcompress <video> [target_mb_or_crf] [output]`**: Compress videos targeting an upload limit (e.g. 25MB for Discord/WhatsApp attachments) or custom CRF rate.
+  ```sh
+  vcompress recording.mp4       # compresses targeting ~25MB (Discord/WhatsApp limit)
+  vcompress recording.webm 10   # calculates bitrate to fit ~10MB
+  vcompress video.mp4 28        # compresses with CRF 28
+  ```
+* **`vtrim <video> <start> <end> [output]`**: Quick video clipping without quality degradation. Accepts `HH:MM:SS`, `MM:SS`, or raw seconds.
+  ```sh
+  vtrim recording.webm 00:00:10 00:00:30 clip.mp4
+  vtrim video.mp4 10 45 clip.mp4
+  ```
+* **`vinfo <media_file>`**: Displays clean, formatted stream metadata (resolution, FPS, video/audio codecs, duration, file size) without ffmpeg's noisy banner.
+* **`iconv <source(s)> <format_or_output>`**: Convert images between formats (`png`, `jpg`, `webp`, `avif`, etc.) with proper alpha-channel flattening for JPEG. Supports single or batch processing.
+  ```sh
+  iconv screenshot.png jpg      # converts to screenshot.jpg (white background if alpha)
+  iconv image.webp png          # converts to png
+  iconv *.png webp              # converts all PNGs in directory to WEBP
+  ```
+* **`iresize <image(s)> <geometry_or_percent>`**: Resize or optimize images while preserving aspect ratio.
+  ```sh
+  iresize photo.jpg 50%         # reduces image to 50%
+  iresize photo.png 1920x1080   # fits within 1920x1080
+  iresize *.jpg 1280            # caps width at 1280px for all photos
+  ```
 
 ### Plain Fish without Zellij
 
@@ -112,6 +156,5 @@ env DISABLE_AUTO_ZELLIJ=1 fish
 ## Install / restore
 
 ```sh
-mkdir -p ~/.config/fish
-cp -r fish/* ~/.config/fish/
+bash scripts/install.sh
 ```
