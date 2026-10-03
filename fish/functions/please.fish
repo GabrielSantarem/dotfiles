@@ -4,5 +4,12 @@ function please --description 'Repeat the previous command with sudo'
         return 1
     end
 
-    eval sudo (history --max=1 | string escape --)
+    set -l last_cmd (builtin history search --max=1)
+    if test -z "$last_cmd"
+        echo 'please: no previous command found in history'
+        return 1
+    end
+
+    echo "sudo $last_cmd"
+    eval sudo $last_cmd
 end
