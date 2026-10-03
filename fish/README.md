@@ -11,7 +11,7 @@ Short, modular Fish setup focused on a clean interactive workflow.
 - cleaned `config.fish`
 - moved aliases into `conf.d/aliases.fish`
 - added utility functions in `functions/`
-- added safe `zellij` auto-attach
+- clean `zellij` auto-start with opt-in automation
 - disabled `starship` in favor of a native ultra-minimal Fish prompt
 - reduced prompt UI to the bare minimum
 
@@ -19,13 +19,20 @@ Short, modular Fish setup focused on a clean interactive workflow.
 
 ### Auto-start Zellij
 
-On interactive local shells, Fish will run:
+On interactive local shells, Fish runs:
 
 ```fish
-zellij --new-session-with-layout proj
+zellij --new-session-with-layout default
 ```
 
-Every terminal starts a **fresh session with clean panes**, opening straight into the `proj` project picker. No old context is restored automatically; if a terminal closed by accident, recover its still-live session with `zellij list-sessions` + `zellij attach <name>`.
+Every terminal starts a **fresh session with a clean shell**. No old context is restored automatically; if a terminal closed by accident, recover its still-live session with `zellij list-sessions` + `zellij attach <name>`.
+
+### Opt-in automation variables
+
+- `ENABLE_AUTO_PROJ=1` (or `AUTO_PROJ=1`): Start Zellij directly with the `proj` project picker layout (`zellij --new-session-with-layout proj`).
+- `ENABLE_AUTO_HX=1` (or `AUTO_HX=1`): Automatically launch Helix (`hx .`) when picking a project in `proj`.
+
+### Zellij auto-start bypass
 
 It will **not** auto-start when:
 
@@ -82,19 +89,19 @@ Prompt files:
 - `mkcd` → create dir and enter it
 - `ff` → fuzzy file finder with preview
 - `fcd` → fuzzy directory jump with preview
-- `proj` → pick a project; inside `zellij` it opens the project in a dedicated full-tab `hx .`, outside it opens `hx .`
-  - set `DISABLE_AUTO_HX=1` to open a shell-only project tab / just `cd` instead of launching Helix
+- `proj` → pick a project; inside `zellij` opens a new tab in the project folder with a clean shell; outside it `cd`s to it.
+  - set `ENABLE_AUTO_HX=1` (or `AUTO_HX=1` or run `proj --hx`) to open the project in a dedicated full-tab `hx .`
 - `gitroot` → jump to current git root
 - `hxhere` → open current directory in Helix
 - `please` → rerun previous command with `sudo`
 
 ### Plain Fish without Zellij
 
+To force a plain shell without `zellij` auto-attach, use:
+
 ```sh
 env DISABLE_AUTO_ZELLIJ=1 fish
 ```
-
-To force a plain shell without `zellij` auto-attach, use:
 
 ## Main files
 

@@ -52,10 +52,9 @@ end
 # -----------------------------
 # Zellij auto-start
 # -----------------------------
-# Start a fresh Zellij session (clean panes, no old context) in interactive
-# local terminals. The `proj` layout opens straight into the project picker.
-# Accidentally closed terminals leave a detached session you can recover
-# manually with `zellij list-sessions` + `zellij attach <name>`.
+# Start a fresh Zellij session (clean panes, default layout) in interactive
+# local terminals.
+# Set ENABLE_AUTO_PROJ=1 (or AUTO_PROJ=1) to start straight into the project picker layout.
 # Set DISABLE_AUTO_ZELLIJ=1 to launch a plain Fish shell without Zellij.
 if status is-interactive
     and type -q zellij
@@ -66,7 +65,11 @@ if status is-interactive
     and not set -q fish_private_mode
     and not set -q DISABLE_AUTO_ZELLIJ
     and test (count $argv) -eq 0
-    zellij --new-session-with-layout proj
+    if set -q ENABLE_AUTO_PROJ; or set -q AUTO_PROJ
+        zellij --new-session-with-layout proj
+    else
+        zellij --new-session-with-layout default
+    end
 end
 
 # -----------------------------

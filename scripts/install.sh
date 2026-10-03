@@ -3,7 +3,7 @@ set -eu
 
 REPO_DIR=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
 CONFIG_DIR=${XDG_CONFIG_HOME:-"$HOME/.config"}
-BACKUP_ROOT=${XDG_STATE_HOME:-"$HOME/.local/state"}/dotfiles-unified/backups
+BACKUP_ROOT=${XDG_STATE_HOME:-"$HOME/.local/state"}/dotfiles/backups
 TIMESTAMP=$(date +%Y%m%d-%H%M%S)
 BACKUP_DIR="$BACKUP_ROOT/$TIMESTAMP"
 MODE="copy"
@@ -29,64 +29,80 @@ log() {
     printf '%s\n' "$*"
 }
 
-run() {
-    if [ "$DRY_RUN" -eq 1 ]; then
-        printf '[dry-run] %s\n' "$*"
-    else
-        sh -c "$*"
+while [ "$#" -gt 0 ]; do
+    case "$1" in
+        --dry-run)
+            DRY_RUN=1
+            ;;
+        --no-backup)
+            DO_BACKUP=0
+            ;;
+        --link)
+            MODE="link"
+            ;;
+        -h|--help)
+            usage
+            exit 0
+            ;;
+        *)
+            echo "Unknown option: $1" >&2
+            usage >&2
+            exit 1
+            ;;
+    esac
+    shift
+done
+
+create_backup() {
+    target=$1
+    if [ ! -e "$target" ] && [ ! -L "$target" ]; then
+        return 0
+    fi
+
+    if [ "$DO_BACKUP" -eq 0 ]; then
+        return 0
+    fi
+
+    mkdir -p "$BACKUP_DIR"
+    rel_path=$(basename "$target")
+    log "Backing up $target -> $BACKUP_DIR/$rel_path"
+    if [ "$DRY_RUN" -eq 0 ]; then
+        cp -a "$target" "$BACKUP_DIR/$rel_path"
     fi
 }
 
-for arg in "$@"; do
-    case "$arg" in
-        --dry-run) DRY_RUN=1 ;;
-        --no-backup) DO_BACKUP=0 ;;
-        --link) MODE="link" ;;
-        -h|--help) usage; exit 0 ;;
-        *) printf 'Unknown option: %s\n' "$arg" >&2; usage >&2; exit 1 ;;
-    esac
-done
-
-for component in $COMPONENTS; do
-    if [ ! -e "$REPO_DIR/$component" ]; then
-        printf 'Missing repo component: %s\n' "$REPO_DIR/$component" >&2
-        exit 1
-    fi
-done
-
-run "mkdir -p '$CONFIG_DIR'"
-
-if [ "$DO_BACKUP" -eq 1 ]; then
-    needs_backup=0
-    for component in $COMPONENTS; do
-        if [ -e "$CONFIG_DIR/$component" ] || [ -L "$CONFIG_DIR/$component" ]; then
-            needs_backup=1
-            break
-        fi
-    done
-    if [ "$needs_backup" -eq 1 ]; then
-        run "mkdir -p '$BACKUP_DIR'"
-        for component in $COMPONENTS; do
-            if [ -e "$CONFIG_DIR/$component" ] || [ -L "$CONFIG_DIR/$component" ]; then
-                run "cp -a '$CONFIG_DIR/$component' '$BACKUP_DIR/$component'"
-            fi
-        done
-        log "Backup: $BACKUP_DIR"
-    fi
-fi
-
-for component in $COMPONENTS; do
-    target="$CONFIG_DIR/$component"
+install_component() {
+    component=$1
     source="$REPO_DIR/$component"
-    if [ -e "$target" ] || [ -L "$target" ]; then
-        run "rm -rf '$target'"
+    target="$CONFIG_DIR/$component"
+
+    if [ ! -e "$source" ]; then
+        log "Skipping $component (not found in repo)"
+        return 0
     fi
+
+    create_backup "$target"
+
+    if [ "$DRY_RUN" -eq 1 ]; then
+        log "[dry-run] install $source -> $target ($MODE)"
+        return 0
+    fi
+
+    rm -rf "$target"
+    mkdir -p "$CONFIG_DIR"
+
     if [ "$MODE" = "link" ]; then
-        run "ln -s '$source' '$target'"
+        ln -s "$source" "$target"
+        log "Linked $source -> $target"
     else
-        run "cp -a '$source' '$target'"
+        cp -a "$source" "$target"
+        log "Copied $source -> $target"
     fi
-    log "Installed $component -> $target"
+}
+
+log "Installing dotfiles from $REPO_DIR to $CONFIG_DIR (mode: $MODE)"
+for component in $COMPONENTS; do
+    install_component "$component"
 done
 
-log "Done. Mode: $MODE"
+log "Install complete."

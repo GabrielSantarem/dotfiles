@@ -4,10 +4,22 @@ function proj --description 'Open a project workflow with zoxide, Helix, and Zel
         return 1
     end
 
-    # Set DISABLE_AUTO_HX=1 to skip opening Helix automatically.
-    set -l open_hx true
-    if set -q DISABLE_AUTO_HX
-        set open_hx false
+    # By default, open a clean shell tab in the project directory.
+    # Set ENABLE_AUTO_HX=1 (or AUTO_HX=1) or pass --hx to launch Helix automatically.
+    set -l open_hx false
+    set -l query_args
+
+    for arg in $argv
+        switch $arg
+            case --hx
+                set open_hx true
+            case '*'
+                set -a query_args $arg
+        end
+    end
+
+    if set -q ENABLE_AUTO_HX; or set -q AUTO_HX
+        set open_hx true
     end
 
     if test $open_hx = true; and not type -q hx
@@ -16,8 +28,8 @@ function proj --description 'Open a project workflow with zoxide, Helix, and Zel
     end
 
     set -l target
-    if test (count $argv) -gt 0
-        set target (zoxide query $argv 2>/dev/null)
+    if test (count $query_args) -gt 0
+        set target (zoxide query $query_args 2>/dev/null)
     else if type -q fzf
         # fzf runs the preview with $SHELL (fish), so keep it a plain command.
         set -l preview 'ls -la {}'
@@ -38,7 +50,7 @@ function proj --description 'Open a project workflow with zoxide, Helix, and Zel
 
         if test $open_hx = true
             # Full-tab Helix; closing it closes the tab and drops back to
-            # the proj picker tab. Use Alt-f for a floating shell meanwhile.
+            # the previous tab. Use Alt-f for a floating shell meanwhile.
             zellij action new-tab --cwd "$target" --name "$tab_name" --close-on-exit -- hx . >/dev/null
         else
             zellij action new-tab --cwd "$target" --name "$tab_name" >/dev/null

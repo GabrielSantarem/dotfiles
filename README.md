@@ -1,13 +1,13 @@
-# Dotfiles Unified
+# Dotfiles
 
-![Repo](https://img.shields.io/badge/repo-dotfiles%20unified-0f1115?style=for-the-badge)
+![Repo](https://img.shields.io/badge/repo-dotfiles-0f1115?style=for-the-badge)
 ![Editor](https://img.shields.io/badge/editor-helix-5e81ac?style=for-the-badge)
 ![Shell](https://img.shields.io/badge/shell-fish-4cc2a6?style=for-the-badge)
 ![Multiplexer](https://img.shields.io/badge/multiplexer-zellij-84a0c6?style=for-the-badge)
 ![Terminal](https://img.shields.io/badge/terminal-alacritty-f2cdcd?style=for-the-badge)
 ![Style](https://img.shields.io/badge/style-minimal%20%26%20portable-1f2428?style=for-the-badge)
 
-Unified dotfiles repository for a clean terminal-centric workflow built around `Helix`, `Fish`, `Zellij`, and `Alacritty`.
+Personal dotfiles repository for a clean terminal-centric workflow built around `Helix`, `Fish`, `Zellij`, and `Alacritty`.
 
 The goal is to keep everything:
 
@@ -85,7 +85,7 @@ Typical flow:
 
 ## Notes
 
-- Existing configs are backed up by default to `~/.local/state/dotfiles-unified/backups/`.
+- Existing configs are backed up by default to `~/.local/state/dotfiles/backups/`.
 - `--link` is useful if you want this repository to become the live source of truth.
 - The repository is intentionally organized as one place for shell, terminal, multiplexer, and editor configuration.
 - Copies stored here should remain free of nested `.git` directories.
