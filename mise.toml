@@ -23,6 +23,9 @@ dust = "latest"
 xh = "latest"
 lazydocker = "latest"
 
+# Documentation & Book Publishing
+mdbook = "latest"
+
 # Language Runtimes
 deno = "latest"
 node = "latest"

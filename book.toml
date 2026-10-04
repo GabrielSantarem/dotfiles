@@ -1,0 +1,22 @@
+[book]
+title = "TF — Terminal Forever"
+authors = ["MrTomate"]
+description = "A keyboard-first, zero-GUI terminal workflow built around Helix, Fish, Zellij, and Alacritty."
+language = "en"
+src = "docs"
+
+[output.html]
+git-repository-url = "https://codeberg.org/MrTomate/dotfiles"
+edit-url-template = "https://codeberg.org/MrTomate/dotfiles/src/branch/main/{path}"
+preferred-dark-theme = "coal"
+default-theme = "coal"
+
+[output.html.search]
+enable = true
+limit-results = 30
+use-boolean-and = true
+boost-title = 2
+boost-hierarchy = 1
+boost-paragraph = 1
+expand = true
+heading-split-level = 3
