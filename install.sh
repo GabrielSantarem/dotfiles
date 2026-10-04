@@ -5,7 +5,7 @@
 #   curl -fsSL https://codeberg.org/MrTomate/dotfiles/raw/branch/main/install.sh | sh
 #   wget -qO- https://codeberg.org/MrTomate/dotfiles/raw/branch/main/install.sh | sh
 #
-# Options (pass after --):
+# Options:
 #   sh install.sh --dir ~/.dotfiles    # Install into custom directory
 #   sh install.sh --link              # Symlink configs into ~/.config
 #   sh install.sh --no-bootstrap      # Only clone/download, skip bootstrap
@@ -22,15 +22,14 @@ DO_BOOTSTRAP=1
 INSTALL_MODE="copy"
 SKIP_OS=0
 
-# Colors (disabled in non-interactive pipes or when NO_COLOR is set)
+# Colors (raw escape bytes to prevent literal \033 escaping in subshells/pipes)
 if [ -t 1 ] && [ -z "${NO_COLOR:-}" ] && [ "${TERM:-dumb}" != "dumb" ]; then
-    CLR_RESET='\033[0m'
-    CLR_BOLD='\033[1m'
-    CLR_GREEN='\033[32m'
-    CLR_RED='\033[31m'
-    CLR_YELLOW='\033[33m'
-    CLR_BLUE='\033[36m'
-    CLR_GRAY='\033[90m'
+    CLR_RESET=$(printf '\033[0m')
+    CLR_BOLD=$(printf '\033[1m')
+    CLR_GREEN=$(printf '\033[32m')
+    CLR_RED=$(printf '\033[31m')
+    CLR_YELLOW=$(printf '\033[33m')
+    CLR_BLUE=$(printf '\033[36m')
 else
     CLR_RESET=''
     CLR_BOLD=''
@@ -38,7 +37,6 @@ else
     CLR_RED=''
     CLR_YELLOW=''
     CLR_BLUE=''
-    CLR_GRAY=''
 fi
 
 log_title() {
@@ -110,7 +108,7 @@ printf "Target: %s\n" "$DOTFILES_DIR"
 
 # 1. Fetch Repository
 if [ -d "$DOTFILES_DIR/.git" ]; then
-    log_info "Existing git repository detected in $DOTFILES_DIR"
+    log_info "Existing repository detected in $DOTFILES_DIR"
     if command -v git >/dev/null 2>&1; then
         log_info "Updating repository via git pull..."
         git -C "$DOTFILES_DIR" pull --ff-only || log_warn "git pull failed, using current local version"
@@ -133,7 +131,6 @@ else
             exit 1
         fi
 
-        # Find the extracted folder and move to target
         extracted_dir=$(find "$tmpdir" -mindepth 1 -maxdepth 1 -type d | head -n 1)
         if [ -n "$extracted_dir" ] && [ -d "$extracted_dir" ]; then
             mkdir -p "$(dirname "$DOTFILES_DIR")"
@@ -169,10 +166,8 @@ esac
 
 # 4. Run Bootstrap
 if [ "$DO_BOOTSTRAP" -eq 1 ]; then
-    log_title "Running system bootstrap"
     bootstrap_args=""
     if [ "$INSTALL_MODE" = "link" ]; then
-        # Install configs with symlink flag
         sh "$DOTFILES_DIR/scripts/install.sh" --link
     fi
     if [ "$SKIP_OS" -eq 1 ]; then

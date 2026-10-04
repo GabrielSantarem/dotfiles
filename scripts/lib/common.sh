@@ -35,13 +35,13 @@ fi
 
 # Color support detection (respects NO_COLOR and dumb terminals)
 if [ -t 1 ] && [ -z "${NO_COLOR:-}" ] && [ "${TERM:-dumb}" != "dumb" ]; then
-    CLR_RESET='\033[0m'
-    CLR_BOLD='\033[1m'
-    CLR_GREEN='\033[38;2;66;190;101m'   # #42be65 (Carbon Green accent)
-    CLR_RED='\033[38;2;255;123;114m'    # Coral red
-    CLR_YELLOW='\033[38;2;242;204;96m'  # Warm yellow
-    CLR_BLUE='\033[38;2;120;219;169m'   # Mint blue
-    CLR_GRAY='\033[38;2;110;118;129m'   # Muted gray
+    CLR_RESET=$(printf '\033[0m')
+    CLR_BOLD=$(printf '\033[1m')
+    CLR_GREEN=$(printf '\033[32m')
+    CLR_RED=$(printf '\033[31m')
+    CLR_YELLOW=$(printf '\033[33m')
+    CLR_BLUE=$(printf '\033[36m')
+    CLR_GRAY=$(printf '\033[90m')
 else
     CLR_RESET=''
     CLR_BOLD=''
@@ -58,29 +58,27 @@ log() {
 }
 
 log_info() {
-    printf "%b[info]%b  %s\n" "$CLR_BLUE" "$CLR_RESET" "$*"
+    printf "info:  %s\n" "$*"
 }
 
 log_success() {
-    printf "%b[ok]%b    %s\n" "$CLR_GREEN" "$CLR_RESET" "$*"
+    printf "%sok:    %s%s\n" "$CLR_GREEN" "$*" "$CLR_RESET"
 }
 
 log_warn() {
-    printf "%b[warn]%b  %s\n" "$CLR_YELLOW" "$CLR_RESET" "$*"
+    printf "%swarn:  %s%s\n" "$CLR_YELLOW" "$*" "$CLR_RESET"
 }
 
 log_error() {
-    printf "%b[error]%b %s\n" "$CLR_RED" "$CLR_RESET" "$*" >&2
+    printf "%serror: %s%s\n" "$CLR_RED" "$*" "$CLR_RESET" >&2
 }
 
 log_step() {
-    printf "\n%b==>%b %b%s%b\n" "$CLR_GREEN" "$CLR_RESET" "$CLR_BOLD" "$1" "$CLR_RESET"
+    printf "\n%s%s:%s\n" "$CLR_BOLD" "$1" "$CLR_RESET"
 }
 
 log_banner() {
-    printf "%b==================================================%b\n" "$CLR_GRAY" "$CLR_RESET"
-    printf "  %b%s%b\n" "$CLR_BOLD" "$1" "$CLR_RESET"
-    printf "%b==================================================%b\n" "$CLR_GRAY" "$CLR_RESET"
+    printf "\n%s==> %s%s\n" "$CLR_BOLD" "$1" "$CLR_RESET"
 }
 
 # Distro Package Manager Detection

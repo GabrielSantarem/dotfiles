@@ -151,7 +151,7 @@ files = [
 ]
 for path in files:
     tomllib.loads(path.read_text())
-    print(f'  \033[38;2;66;190;101m[ok]\033[0m   toml {path.relative_to(repo)}')
+    print(f'  \033[32m[ok]\033[0m   toml {path.relative_to(repo)}')
 PY
 fi
 
@@ -173,12 +173,10 @@ if command -v zellij >/dev/null 2>&1; then
     printf "  %b[ok]%b   zellij config\n" "$CLR_GREEN" "$CLR_RESET"
 fi
 
-printf "\n%b==================================================%b\n" "$CLR_GRAY" "$CLR_RESET"
-printf "Summary: %d checked | %d ok | %d missing | %d optional\n" \
+printf "\nSummary: %d checked | %d ok | %d missing | %d optional\n" \
     "$TOTAL_CHECKED" "$TOTAL_OK" "$TOTAL_MISSING" "$TOTAL_OPTIONAL"
-printf "%b==================================================%b\n" "$CLR_GRAY" "$CLR_RESET"
 
 if [ "$TOTAL_MISSING" -gt 0 ]; then
-    log_warn "Some required dependencies are missing. Run 'bash scripts/bootstrap.sh' to install them."
+    log_warn "Some required dependencies are missing. Run './dotfiles bootstrap' to install them."
     exit 1
 fi
