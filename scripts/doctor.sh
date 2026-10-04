@@ -5,6 +5,19 @@ set -eu
 SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 . "$SCRIPT_DIR/lib/common.sh"
 
+SHOW_VERSIONS=0
+for arg in "$@"; do
+    case "$arg" in
+        -v|--version|--versions)
+            SHOW_VERSIONS=1
+            ;;
+    esac
+done
+
+if [ "${DOTFILES_DOCTOR_VERSIONS:-0}" = "1" ] || [ "${CHECK_VERSIONS:-0}" = "1" ]; then
+    SHOW_VERSIONS=1
+fi
+
 TOTAL_CHECKED=0
 TOTAL_OK=0
 TOTAL_OPTIONAL=0
@@ -17,8 +30,24 @@ check_bin() {
     TOTAL_CHECKED=$((TOTAL_CHECKED + 1))
 
     if command -v "$name" >/dev/null 2>&1; then
-        TOTAL_OK=$((TOTAL_OK + 1))
-        printf "  %b[ok]%b   %-30s -> %s\n" "$CLR_GREEN" "$CLR_RESET" "$label" "$(command -v "$name")"
+        bin_path=$(command -v "$name")
+        if [ "$SHOW_VERSIONS" -eq 1 ]; then
+            if ver=$(get_cmd_version "$name" 2>/dev/null); then
+                TOTAL_OK=$((TOTAL_OK + 1))
+                printf "  %b[ok]%b   %-30s -> %s %b(v%s)%b\n" "$CLR_GREEN" "$CLR_RESET" "$label" "$bin_path" "$CLR_BLUE" "$ver" "$CLR_RESET"
+            else
+                if [ "$optional" -eq 1 ]; then
+                    TOTAL_OPTIONAL=$((TOTAL_OPTIONAL + 1))
+                    printf "  %b[opt]%b  %-30s -> %s %b(exec check failed)%b\n" "$CLR_YELLOW" "$CLR_RESET" "$label" "$bin_path" "$CLR_RED" "$CLR_RESET"
+                else
+                    TOTAL_MISSING=$((TOTAL_MISSING + 1))
+                    printf "  %b[fail]%b %-30s -> %s %b(exec check failed)%b\n" "$CLR_RED" "$CLR_RESET" "$label" "$bin_path" "$CLR_RED" "$CLR_RESET"
+                fi
+            fi
+        else
+            TOTAL_OK=$((TOTAL_OK + 1))
+            printf "  %b[ok]%b   %-30s -> %s\n" "$CLR_GREEN" "$CLR_RESET" "$label" "$bin_path"
+        fi
     else
         if [ "$optional" -eq 1 ]; then
             TOTAL_OPTIONAL=$((TOTAL_OPTIONAL + 1))
@@ -33,6 +62,9 @@ check_bin() {
 log_banner "Dotfiles Environment Health Check"
 printf "Repo:       %s\n" "$REPO_DIR"
 printf "Config dir: %s\n" "$CONFIG_DIR"
+if [ "$SHOW_VERSIONS" -eq 1 ]; then
+    printf "Exec check: enabled (querying live versions)\n"
+fi
 
 log_step "Core Repository Components"
 for dir in $COMPONENTS; do
@@ -60,6 +92,16 @@ check_bin fd "fd (directory search)"
 check_bin bat "bat (preview pager)"
 check_bin zoxide "zoxide (directory jump)"
 check_bin sudo "sudo (privilege elevation)" 1
+
+log_step "Modern TUI Suite"
+check_bin lazygit "lazygit (git TUI)" 1
+check_bin delta "delta (diff pager)" 1
+check_bin yazi "yazi (file manager TUI)" 1
+check_bin btm "bottom (system monitor)" 1
+check_bin dust "dust (disk analyzer)" 1
+check_bin serpl "serpl (search & replace TUI)" 1
+check_bin xh "xh (HTTP/API client)" 1
+check_bin lazydocker "lazydocker (docker TUI)" 1
 
 log_step "Media Tools (Fish Wrappers)"
 check_bin ffmpeg "ffmpeg (video processing)"

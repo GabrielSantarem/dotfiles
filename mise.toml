@@ -13,6 +13,16 @@ fd = "latest"
 bat = "latest"
 zoxide = "latest"
 
+# Modern TUI Suite
+lazygit = "latest"
+delta = "latest"
+yazi = "latest"
+bottom = "latest"
+dust = "latest"
+"aqua:yassinebridi/serpl" = "latest"
+xh = "latest"
+lazydocker = "latest"
+
 # Language Runtimes
 deno = "latest"
 node = "latest"

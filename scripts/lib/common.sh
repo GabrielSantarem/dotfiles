@@ -94,3 +94,68 @@ detect_os_pm() {
         echo "unknown"
     fi
 }
+
+# Resolve and verify binary version
+get_cmd_version() {
+    _cmd=$1
+    _raw=""
+    _ver=""
+    case "$_cmd" in
+        ffmpeg|ffprobe)
+            _raw=$("$_cmd" -version 2>/dev/null) || return 1
+            ;;
+        gopls)
+            _raw=$("$_cmd" version 2>/dev/null) || return 1
+            ;;
+        goimports)
+            if command -v go >/dev/null 2>&1; then
+                _raw=$(go version -m "$(command -v goimports)" 2>/dev/null | grep 'mod	' | head -n 1)
+            else
+                _raw="goimports"
+            fi
+            ;;
+        basedpyright-langserver)
+            if command -v basedpyright >/dev/null 2>&1; then
+                _raw=$(basedpyright --version 2>/dev/null) || return 1
+            else
+                printf "installed"
+                return 0
+            fi
+            ;;
+        tailwindcss-language-server)
+            _bin_path=$(command -v "$_cmd" 2>/dev/null)
+            _pkg="$(dirname "$_bin_path")/../lib/node_modules/@tailwindcss/language-server/package.json"
+            if [ -f "$_pkg" ]; then
+                _ver=$(grep -o '"version": "[^"]*"' "$_pkg" 2>/dev/null | head -n 1 | cut -d'"' -f4)
+            fi
+            ;;
+        vscode-*-language-server)
+            _bin_path=$(command -v "$_cmd" 2>/dev/null)
+            _pkg="$(dirname "$_bin_path")/../lib/node_modules/vscode-langservers-extracted/package.json"
+            if [ -f "$_pkg" ]; then
+                _ver=$(grep -o '"version": "[^"]*"' "$_pkg" 2>/dev/null | head -n 1 | cut -d'"' -f4)
+            fi
+            ;;
+        eza)
+            _raw=$("$_cmd" -v 2>/dev/null) || return 1
+            ;;
+        sudo)
+            _raw=$("$_cmd" -V 2>/dev/null) || return 1
+            ;;
+        *)
+            _raw=$("$_cmd" --version 2>/dev/null) || return 1
+            ;;
+    esac
+
+    if [ -z "$_ver" ] && [ -n "$_raw" ]; then
+        _ver=$(printf "%s" "$_raw" | grep -oE "[0-9]+\.[0-9]+(\.[0-9]+)?(-[a-zA-Z0-9.]+)*" 2>/dev/null | head -n 1)
+    fi
+
+    if [ -n "$_ver" ]; then
+        printf "%s" "$_ver"
+    elif [ -n "$_raw" ]; then
+        printf "%s" "$_raw" | head -n 1 | cut -c 1-25
+    else
+        return 1
+    fi
+}

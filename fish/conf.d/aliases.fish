@@ -1,12 +1,14 @@
 # ~/.config/fish/conf.d/aliases.fish
 # Practical aliases loaded automatically by Fish
 
+# Navigation & Directory Listing
 if type -q eza
     alias la 'eza -la --icons --git --group-directories-first'
     alias lt 'eza --tree --level=2 --icons --group-directories-first'
     alias tree 'eza --tree --icons --group-directories-first'
 end
 
+# Git Aliases
 if type -q git
     alias g 'git'
     alias gs 'git status -sb'
@@ -22,6 +24,24 @@ if type -q git
     alias gpl 'git pull'
 end
 
+# Modern TUI Suite Aliases
+if type -q lazygit
+    alias lg 'lazygit'
+end
+
+if type -q dust
+    alias du 'dust'
+end
+
+if type -q lazydocker
+    alias ld 'lazydocker'
+end
+
+if type -q serpl
+    alias sr 'serpl'
+end
+
+# Dev Tooling
 if type -q cargo
     alias c 'cargo'
     alias cb 'cargo build'

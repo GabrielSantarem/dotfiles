@@ -11,6 +11,8 @@ Usage: $(basename "$0") <command> [options]
 
 Commands:
   doctor, check     Run environment health check (bins, LSPs, syntax)
+                    Options: -v, --version (verify execution & live versions)
+  test              Run full integration & smoke test suite (syntax, bins, aliases)
   diff              Show colored differences between ~/.config and repository
   install           Install or update configurations into ~/.config
   sync              Pull live configurations from ~/.config back into repo
@@ -19,6 +21,8 @@ Commands:
 
 Examples:
   ./dotfiles doctor
+  ./dotfiles doctor --version
+  ./dotfiles test
   ./dotfiles diff
   ./dotfiles diff --stat
   ./dotfiles install --link
@@ -34,6 +38,9 @@ fi
 case "$cmd" in
     doctor|check)
         exec sh "$REPO_DIR/scripts/doctor.sh" "$@"
+        ;;
+    test)
+        exec sh "$REPO_DIR/scripts/test.sh" "$@"
         ;;
     diff)
         exec sh "$REPO_DIR/scripts/diff.sh" "$@"
