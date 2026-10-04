@@ -1,3 +1,8 @@
+# Languages and Language Server configurations for Helix
+
+# -----------------------------------------------------------------------------
+# Go
+# -----------------------------------------------------------------------------
 [[language]]
 name = "go"
 auto-format = true
@@ -8,6 +13,9 @@ language-servers = ["gopls"]
 hints = { assignVariableTypes = true, compositeLiteralFields = true, compositeLiteralTypes = true, constantValues = true, functionTypeParameters = true, parameterNames = true, rangeVariableTypes = true }
 analyses = { unusedparams = true, unusedwrite = true, shadow = true }
 
+# -----------------------------------------------------------------------------
+# Rust
+# -----------------------------------------------------------------------------
 [[language]]
 name = "rust"
 auto-format = true
@@ -19,6 +27,9 @@ cargo = { allFeatures = true }
 check = { command = "clippy" }
 inlayHints = { bindingModeHints = { enable = true }, closingBraceHints = { enable = true, minLines = 10 }, closureReturnTypeHints = { enable = "with_block" }, discriminantHints = { enable = "fieldless" }, lifetimeElisionHints = { enable = "skip_trivial", useParameterNames = true }, reborrowHints = { enable = "always" }, renderColons = true, typeHints = { enable = true, hideClosureInitialization = false, hideNamedConstructor = false } }
 
+# -----------------------------------------------------------------------------
+# Python
+# -----------------------------------------------------------------------------
 [language-server.basedpyright]
 command = "basedpyright-langserver"
 args = ["--stdio"]
@@ -37,33 +48,134 @@ auto-format = true
 formatter = { command = "ruff", args = ["format", "-"] }
 language-servers = ["basedpyright", "ruff"]
 
+# -----------------------------------------------------------------------------
+# PHP (Phpactor)
+# -----------------------------------------------------------------------------
+[language-server.phpactor]
+command = "phpactor"
+args = ["language-server"]
+
+[[language]]
+name = "php"
+auto-format = true
+language-servers = ["phpactor"]
+
+# -----------------------------------------------------------------------------
+# Ruby
+# -----------------------------------------------------------------------------
+[language-server.ruby-lsp]
+command = "ruby-lsp"
+
+[language-server.solargraph]
+command = "solargraph"
+args = ["stdio"]
+
+[[language]]
+name = "ruby"
+auto-format = true
+language-servers = ["ruby-lsp"]
+
+# -----------------------------------------------------------------------------
+# JavaScript / TypeScript / JSX / TSX (Powered by Deno LSP & Tools)
+# -----------------------------------------------------------------------------
+[language-server.deno-lsp]
+command = "deno"
+args = ["lsp"]
+
+[language-server.deno-lsp.config.deno]
+enable = true
+lint = true
+unstable = false
+suggest.imports.hosts = { "https://deno.land" = true }
+inlayHints.parameterNames.enabled = "all"
+inlayHints.parameterTypes.enabled = true
+inlayHints.variableTypes.enabled = true
+inlayHints.propertyDeclarationTypes.enabled = true
+inlayHints.functionLikeReturnTypes.enabled = true
+inlayHints.enumMemberValues.enabled = true
+
+[language-server.tailwindcss-ls]
+command = "tailwindcss-language-server"
+args = ["--stdio"]
+
 [[language]]
 name = "javascript"
 auto-format = true
 formatter = { command = "deno", args = ["fmt", "-"] }
+language-servers = ["deno-lsp"]
 
 [[language]]
 name = "typescript"
 auto-format = true
 formatter = { command = "deno", args = ["fmt", "-"] }
-
-[[language]]
-name = "tsx"
-auto-format = true
-formatter = { command = "deno", args = ["fmt", "-"] }
+language-servers = ["deno-lsp"]
 
 [[language]]
 name = "jsx"
 auto-format = true
 formatter = { command = "deno", args = ["fmt", "-"] }
+language-servers = ["deno-lsp", "tailwindcss-ls"]
+
+[[language]]
+name = "tsx"
+auto-format = true
+formatter = { command = "deno", args = ["fmt", "-"] }
+language-servers = ["deno-lsp", "tailwindcss-ls"]
+
+# -----------------------------------------------------------------------------
+# Web Markup & Styling (HTML / CSS / SCSS)
+# -----------------------------------------------------------------------------
+[language-server.vscode-html-language-server]
+command = "vscode-html-language-server"
+args = ["--stdio"]
+
+[language-server.vscode-html-language-server.config]
+provideFormatter = false
+
+[language-server.vscode-css-language-server]
+command = "vscode-css-language-server"
+args = ["--stdio"]
+
+[language-server.vscode-css-language-server.config]
+provideFormatter = false
+
+[[language]]
+name = "html"
+auto-format = true
+formatter = { command = "deno", args = ["fmt", "--ext", "html", "-"] }
+language-servers = ["vscode-html-language-server", "tailwindcss-ls"]
+
+[[language]]
+name = "css"
+auto-format = true
+formatter = { command = "deno", args = ["fmt", "--ext", "css", "-"] }
+language-servers = ["vscode-css-language-server", "tailwindcss-ls"]
+
+[[language]]
+name = "scss"
+auto-format = true
+formatter = { command = "deno", args = ["fmt", "--ext", "scss", "-"] }
+language-servers = ["vscode-css-language-server", "tailwindcss-ls"]
+
+# -----------------------------------------------------------------------------
+# Data formats & Scripting (JSON / Lua)
+# -----------------------------------------------------------------------------
+[language-server.vscode-json-language-server]
+command = "vscode-json-language-server"
+args = ["--stdio"]
+
+[language-server.vscode-json-language-server.config]
+provideFormatter = false
+json = { validate = { enable = true } }
 
 [[language]]
 name = "json"
 auto-format = true
 formatter = { command = "deno", args = ["fmt", "-"] }
+language-servers = ["vscode-json-language-server"]
 
 [[language]]
 name = "lua"
 auto-format = true
-formatter = { command = "stylua", args = ["-" ] }
+formatter = { command = "stylua", args = ["-"] }
 language-servers = ["lua-language-server"]

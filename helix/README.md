@@ -19,7 +19,8 @@ This setup includes:
 - stronger editor UX defaults
 - autosave and auto-format
 - LSP hints, diagnostics, signature help, and completion
-- language setup for Go, Rust, Python, JavaScript/TypeScript, and Lua
+- battery-included Deno setup (`deno-lsp` + `deno fmt`) for TypeScript and JavaScript
+- language setup for Go, Rust, Python, PHP (Phpactor), Ruby, TypeScript/JavaScript/JSX/TSX, HTML/CSS/SCSS, JSON, and Lua
 - practical keybindings for daily editing
 
 ---
@@ -165,13 +166,45 @@ The Catppuccin variants inherit from `catppuccin_mocha` and keep the same dark b
 | Go | `gopls` | `goimports` | extra hints and analyses enabled |
 | Rust | `rust-analyzer` | `rustfmt` | `clippy` checks, rich inlay hints |
 | Python | `basedpyright`, `ruff` | `ruff format` | explicit LSP setup in `languages.toml` |
-| JavaScript | `typescript-language-server` | `deno fmt` | formatter configured explicitly |
-| TypeScript | `typescript-language-server` | `deno fmt` | works for `ts`, `tsx`, `jsx`, `json` too |
+| PHP | `phpactor` | `phpactor` | configured with `language-server` command |
+| Ruby | `ruby-lsp`, `solargraph` | LSP format (`rubocop`) | modern Shopify `ruby-lsp` integration |
+| JavaScript / TypeScript | `deno-lsp` | `deno fmt` | native Deno LSP with rich inlay hints & linting |
+| JSX / TSX | `deno-lsp`, `tailwindcss-ls` | `deno fmt` | full Deno + Tailwind CSS support |
+| HTML | `vscode-html-language-server`, `tailwindcss-ls` | `deno fmt` | template and class completion |
+| CSS / SCSS | `vscode-css-language-server`, `tailwindcss-ls` | `deno fmt` | style linting and utility completion |
+| JSON | `vscode-json-language-server` | `deno fmt` | schema validation and auto-format |
 | Lua | `lua-language-server` | `stylua` | simple and reliable setup |
 
 ---
 
 ## Language-specific details
+
+### JavaScript / TypeScript / JSX / TSX (Deno)
+
+- `deno-lsp` (`deno lsp`) enabled as the unified language server with:
+  - linting enabled (`deno lint`)
+  - inlay hints for parameter names, variable types, function returns, and enum values
+  - auto-import completion suggestions
+- `tailwindcss-language-server` attached to JSX and TSX
+- `deno fmt -` used as the fast, built-in formatter
+
+### PHP (Phpactor)
+
+- `phpactor` configured as the primary LSP (`phpactor language-server`)
+- auto-format on save enabled
+- standalone binary installed in `~/.local/bin/phpactor`
+
+### Ruby
+
+- `ruby-lsp` enabled as primary language server
+- `solargraph` fallback available
+- automatic formatting using project RuboCop through `ruby-lsp`
+
+### HTML / CSS / SCSS
+
+- `vscode-html-language-server` and `vscode-css-language-server` enabled
+- `tailwindcss-language-server` attached for Tailwind utility classes
+- `deno fmt` used for clean, reliable formatting
 
 ### Go
 
@@ -192,13 +225,8 @@ The Catppuccin variants inherit from `catppuccin_mocha` and keep the same dark b
 - `basedpyright-langserver --stdio`
 - `ruff server`
 - `ruff format -` as formatter
-- `typeCheckingMode = "standard"`
+- `typeCheckingMode = \"standard\"`
 - `autoImportCompletions = true`
-
-### JavaScript / TypeScript / JSX / TSX / JSON
-
-- `typescript-language-server` available on `PATH`
-- `deno fmt -` used as formatter
 
 ### Lua
 
@@ -207,171 +235,18 @@ The Catppuccin variants inherit from `catppuccin_mocha` and keep the same dark b
 
 ---
 
-## Verified tools
-
-The following tools were available and detected when this backup was created:
-
-- `typescript-language-server`
-- `basedpyright-langserver`
-- `ruff`
-- `lua-language-server`
-- `stylua`
-
-### Health checks
-
-Previously validated with:
-
-- `hx --health python` ✅
-- `hx --health lua` ✅
-- `hx --health javascript` ✅
-
-> Note: JavaScript health may still show a missing debug adapter. That does **not** affect LSP, completion, diagnostics, or formatting.
-
----
-
 ## Installation
 
-### 1. Install Helix
+### 1. Install configs using repository script
 
-Make sure `hx` is installed and available in your `PATH`.
-
-### 2. Copy this config into `~/.config/helix`
-
-If this repository is already cloned locally:
+Run from repo root:
 
 ```sh
-mkdir -p ~/.config/helix
-cp config.toml ~/.config/helix/config.toml
-cp languages.toml ~/.config/helix/languages.toml
-mkdir -p ~/.config/helix/themes
-cp themes/carbon-green.toml ~/.config/helix/themes/carbon-green.toml
-cp themes/catppuccin-soft-yellow.toml ~/.config/helix/themes/catppuccin-soft-yellow.toml
-cp themes/catppuccin-soft-blue.toml ~/.config/helix/themes/catppuccin-soft-blue.toml
+bash scripts/install.sh
 ```
 
-Or copy the full directory contents:
+### 2. Validate environment
 
 ```sh
-mkdir -p ~/.config/helix
-cp -r ./* ~/.config/helix/
+bash scripts/doctor.sh
 ```
-
-### 3. Reload Helix
-
-Inside Helix:
-
-```text
-:config-reload
-```
-
-Or simply restart the editor.
-
-### Switching themes
-
-Inside Helix:
-
-```text
-:theme carbon-green
-:theme catppuccin-soft-yellow
-:theme catppuccin-soft-blue
-```
-
----
-
-## Required external tools
-
-Install the tools you actually use for your languages.
-
-### Core tools referenced by this config
-
-```sh
-gopls
-goimports
-rust-analyzer
-rustfmt
-basedpyright
-ruff
-typescript-language-server
-deno
-lua-language-server
-stylua
-```
-
----
-
-## Validate the setup
-
-Run Helix health checks:
-
-```sh
-hx --health go
-hx --health rust
-hx --health python
-hx --health javascript
-hx --health lua
-```
-
----
-
-## Shell commands inside Helix
-
-Helix can run shell commands, but it does **not** provide a persistent integrated terminal.
-
-### Useful built-ins
-
-- `:sh <command>` — run a shell command and show its output in a popup
-- `!` — insert command output into the buffer
-- `Alt-!` — append command output after selection
-- `|` — pipe selection through a command and replace it with the result
-- `Alt-|` — pipe selection to a command and ignore output
-
-### Recommendation
-
-For long-running commands such as:
-
-- `go test`
-- `cargo check`
-- `npm run build`
-- `pytest`
-
-an external terminal, `tmux`, or `zellij` is still the best workflow.
-
----
-
-## Backup and restore
-
-### Create a backup repository
-
-```sh
-git init
-git add .
-git commit -m "Add Helix IDE config backup"
-```
-
-Then push it to your own Git repository.
-
-### Restore on another machine
-
-1. clone the repository
-2. copy the files into `~/.config/helix`
-3. install the required external tools
-4. run `hx --health <language>` to verify everything
-
----
-
-## Notes
-
-This setup aims to stay:
-
-- minimal
-- fast
-- practical
-- close to stock Helix behavior
-
-while still giving a more IDE-like experience for daily development.
-
----
-
-## License
-
-Use, modify, and adapt freely for your own setup.
