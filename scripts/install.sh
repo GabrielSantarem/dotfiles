@@ -1,15 +1,15 @@
 #!/usr/bin/env sh
 set -eu
 
-REPO_DIR=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
-CONFIG_DIR=${XDG_CONFIG_HOME:-"$HOME/.config"}
-BACKUP_ROOT=${XDG_STATE_HOME:-"$HOME/.local/state"}/dotfiles/backups
+# Load common library
+SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+. "$SCRIPT_DIR/lib/common.sh"
+
 TIMESTAMP=$(date +%Y%m%d-%H%M%S)
 BACKUP_DIR="$BACKUP_ROOT/$TIMESTAMP"
 MODE="copy"
 DO_BACKUP=1
 DRY_RUN=0
-COMPONENTS="helix fish zellij alacritty"
 
 usage() {
     cat <<USAGE
@@ -21,12 +21,8 @@ Options:
   --dry-run       Show what would happen without changing files
   --no-backup     Replace existing configs without creating a backup
   --link          Symlink configs instead of copying them
-  -h, --help      Show this help
+  -h, --help      Show this help message
 USAGE
-}
-
-log() {
-    printf '%s\n' "$*"
 }
 
 while [ "$#" -gt 0 ]; do
@@ -45,7 +41,7 @@ while [ "$#" -gt 0 ]; do
             exit 0
             ;;
         *)
-            echo "Unknown option: $1" >&2
+            log_error "Unknown option: $1"
             usage >&2
             exit 1
             ;;
@@ -63,11 +59,13 @@ create_backup() {
         return 0
     fi
 
-    mkdir -p "$BACKUP_DIR"
     rel_path=$(basename "$target")
-    log "Backing up $target -> $BACKUP_DIR/$rel_path"
-    if [ "$DRY_RUN" -eq 0 ]; then
+    if [ "$DRY_RUN" -eq 1 ]; then
+        log_info "[dry-run] Backing up $target -> $BACKUP_DIR/$rel_path"
+    else
+        mkdir -p "$BACKUP_DIR"
         cp -a "$target" "$BACKUP_DIR/$rel_path"
+        log_info "Backed up $target -> $BACKUP_DIR/$rel_path"
     fi
 }
 
@@ -77,14 +75,14 @@ install_component() {
     target="$CONFIG_DIR/$component"
 
     if [ ! -e "$source" ]; then
-        log "Skipping $component (not found in repo)"
+        log_warn "Skipping $component (not found in repo)"
         return 0
     fi
 
     create_backup "$target"
 
     if [ "$DRY_RUN" -eq 1 ]; then
-        log "[dry-run] install $source -> $target ($MODE)"
+        log_info "[dry-run] install $source -> $target ($MODE)"
         return 0
     fi
 
@@ -93,16 +91,16 @@ install_component() {
 
     if [ "$MODE" = "link" ]; then
         ln -s "$source" "$target"
-        log "Linked $source -> $target"
+        log_success "Linked $source -> $target"
     else
         cp -a "$source" "$target"
-        log "Copied $source -> $target"
+        log_success "Copied $source -> $target"
     fi
 }
 
-log "Installing dotfiles from $REPO_DIR to $CONFIG_DIR (mode: $MODE)"
+log_banner "Installing Dotfiles to $CONFIG_DIR (mode: $MODE)"
 for component in $COMPONENTS; do
     install_component "$component"
 done
 
-log "Install complete."
+log_step "Install complete!"

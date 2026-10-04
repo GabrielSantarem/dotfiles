@@ -1,0 +1,59 @@
+#!/usr/bin/env sh
+set -eu
+
+REPO_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+
+usage() {
+    cat <<USAGE
+Dotfiles Management CLI
+
+Usage: $(basename "$0") <command> [options]
+
+Commands:
+  doctor, check     Run environment health check (bins, LSPs, syntax)
+  diff              Show colored differences between ~/.config and repository
+  install           Install or update configurations into ~/.config
+  sync              Pull live configurations from ~/.config back into repo
+  bootstrap         Automated first-time setup and dependency installer
+  help, -h, --help  Show this help message
+
+Examples:
+  ./dotfiles doctor
+  ./dotfiles diff
+  ./dotfiles diff --stat
+  ./dotfiles install --link
+  ./dotfiles sync --dry-run
+USAGE
+}
+
+cmd=${1:-help}
+if [ "$#" -gt 0 ]; then
+    shift
+fi
+
+case "$cmd" in
+    doctor|check)
+        exec sh "$REPO_DIR/scripts/doctor.sh" "$@"
+        ;;
+    diff)
+        exec sh "$REPO_DIR/scripts/diff.sh" "$@"
+        ;;
+    install)
+        exec sh "$REPO_DIR/scripts/install.sh" "$@"
+        ;;
+    sync)
+        exec sh "$REPO_DIR/scripts/sync-from-config.sh" "$@"
+        ;;
+    bootstrap)
+        exec sh "$REPO_DIR/scripts/bootstrap.sh" "$@"
+        ;;
+    help|-h|--help)
+        usage
+        exit 0
+        ;;
+    *)
+        echo "Unknown command: $cmd" >&2
+        echo "Run './dotfiles help' for usage." >&2
+        exit 1
+        ;;
+esac

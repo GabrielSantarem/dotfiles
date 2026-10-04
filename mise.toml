@@ -1,0 +1,24 @@
+# mise.toml - System-agnostic tool definitions for dotfiles
+# Learn more: https://mise.jdx.dev/
+
+[tools]
+# Core Editor & Multiplexer
+helix = "latest"
+zellij = "latest"
+
+# CLI Navigation & Productive Aliases
+eza = "latest"
+fzf = "latest"
+fd = "latest"
+bat = "latest"
+zoxide = "latest"
+
+# Language Runtimes
+deno = "latest"
+node = "latest"
+
+# Formatters & Language Servers
+stylua = "latest"
+ruff = "latest"
+"npm:vscode-langservers-extracted" = "latest"
+"npm:@tailwindcss/language-server" = "latest"
