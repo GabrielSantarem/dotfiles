@@ -15,7 +15,7 @@ The goal is to keep everything:
 - system-agnostic (powered by `mise`)
 - portable
 - easy to validate (`doctor.sh`, `test.sh`)
-- easy to install and bootstrap (`bootstrap.sh`, `install.sh`)
+- easy to install and bootstrap (`install.sh`, `bootstrap.sh`)
 - easy to version and back up
 
 ## Included configs
@@ -27,6 +27,7 @@ The goal is to keep everything:
 - `scripts/` — bootstrap, installation, diff, sync, and health check scripts
 - `mise.toml` — universal tool definitions (userland, system-agnostic)
 - `dotfiles` — unified root CLI management script
+- `install.sh` — standalone one-liner web installer & distributor
 
 ## Component documentation
 
@@ -43,9 +44,10 @@ Each tool has its own focused README:
 ```text
 .
 ├── alacritty/
-├── dotfiles                # Unified root CLI dispatcher
+├── dotfiles                # Unified CLI dispatcher (symlinked to ~/.local/bin)
 ├── fish/
 ├── helix/
+├── install.sh              # Web one-liner installer (curl | sh)
 ├── mise.toml               # Universal userland tool definitions
 ├── scripts/
 │   ├── README.md
@@ -74,35 +76,49 @@ Each tool has its own focused README:
 
 On any new machine (Fedora, Debian/Ubuntu, Arch, macOS):
 
+### Option A: One-Liner Web Installer (Recommended)
+No need to install `git` or manually clone beforehand:
+
 ```sh
-# Clone and run the system-agnostic bootstrapper
-git clone ssh://git@codeberg.org/MrTomate/dotfiles.git ~/dotfiles
-cd ~/dotfiles
+curl -fsSL https://codeberg.org/MrTomate/dotfiles/raw/branch/main/install.sh | sh
+```
+
+Or using `wget`:
+```sh
+wget -qO- https://codeberg.org/MrTomate/dotfiles/raw/branch/main/install.sh | sh
+```
+
+### Option B: Manual Git Clone
+```sh
+git clone ssh://git@codeberg.org/MrTomate/dotfiles.git ~/.dotfiles
+cd ~/.dotfiles
 ./dotfiles bootstrap
 ```
 
-The bootstrapper automatically:
-1. Detects or installs `mise` (Universal Tool Manager).
-2. Installs OS-level libraries (`alacritty`, `fish`, `ffmpeg`, `imagemagick`).
-3. Installs userland tools via `mise` (`helix`, `zellij`, `eza`, `fzf`, `bat`, `fd`, `zoxide`, `deno`, TUI tools, LSPs).
-4. Sets up standalone tools like `phpactor`.
-5. Links or copies configurations into `~/.config`.
-6. Runs a full diagnostic report (`./dotfiles doctor`).
+The installer automatically:
+1. Clones or unpacks the repository into `~/.dotfiles`.
+2. Symlinks the `dotfiles` command to `~/.local/bin/dotfiles` (available anywhere in terminal).
+3. Detects or installs `mise` (Universal Tool Manager).
+4. Installs OS-level libraries (`alacritty`, `fish`, `ffmpeg`, `imagemagick`).
+5. Installs userland tools via `mise` (`helix`, `zellij`, `eza`, `fzf`, `bat`, `fd`, `zoxide`, `deno`, TUI tools, LSPs).
+6. Sets up standalone tools like `phpactor`.
+7. Links or copies configurations into `~/.config`.
+8. Runs a full diagnostic report (`dotfiles doctor`).
 
-## Management CLI (`./dotfiles`)
+## Management CLI (`dotfiles`)
 
-Run directly from repository root:
+Once installed, the `dotfiles` command is accessible from any terminal directory:
 
 ```sh
-./dotfiles doctor         # Exhaustive 47-point environment health check (fast PATH check)
-./dotfiles doctor -v      # Live execution & version check for all binaries
-./dotfiles test           # Smoke & integration tests (syntax, binaries, Fish aliases)
-./dotfiles diff           # Inspect colorized differences (~/.config ↔ repo)
-./dotfiles diff --stat    # Compact file difference summary
-./dotfiles install        # Copy configs to ~/.config (with timestamped backups)
-./dotfiles install --link # Symlink configs directly to repo
-./dotfiles sync           # Pull changes from ~/.config back into repo
-./dotfiles bootstrap      # Full automated machine setup
+dotfiles doctor         # Exhaustive 47-point environment health check (fast PATH check)
+dotfiles doctor -v      # Live execution & version check for all binaries
+dotfiles test           # Smoke & integration tests (syntax, binaries, Fish aliases)
+dotfiles diff           # Inspect colorized differences (~/.config ↔ repo)
+dotfiles diff --stat    # Compact file difference summary
+dotfiles install        # Copy configs to ~/.config (with timestamped backups)
+dotfiles install --link # Symlink configs directly to repo
+dotfiles sync           # Pull changes from ~/.config back into repo
+dotfiles bootstrap      # Full automated machine setup
 ```
 
 ## Workflow
@@ -111,8 +127,8 @@ Typical flow:
 
 1. edit configs inside this repository
 2. install or link them into `~/.config`
-3. validate with `./dotfiles doctor` or `./dotfiles test`
-4. review changes with `./dotfiles diff`
+3. validate with `dotfiles doctor` or `dotfiles test`
+4. review changes with `dotfiles diff`
 5. commit and push changes
 
 ## Notes

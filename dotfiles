@@ -1,7 +1,18 @@
 #!/usr/bin/env sh
 set -eu
 
-REPO_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+# Resolve symlink if invoked from PATH (e.g. ~/.local/bin/dotfiles)
+PRG="$0"
+while [ -h "$PRG" ]; do
+    ls=$(ls -ld "$PRG")
+    link=$(expr "$ls" : '.*-> \(.*\)$')
+    if expr "$link" : '/.*' > /dev/null; then
+        PRG="$link"
+    else
+        PRG="$(dirname "$PRG")/$link"
+    fi
+done
+REPO_DIR=$(CDPATH= cd -- "$(dirname -- "$PRG")" && pwd)
 
 usage() {
     cat <<USAGE
@@ -20,13 +31,13 @@ Commands:
   help, -h, --help  Show this help message
 
 Examples:
-  ./dotfiles doctor
-  ./dotfiles doctor --version
-  ./dotfiles test
-  ./dotfiles diff
-  ./dotfiles diff --stat
-  ./dotfiles install --link
-  ./dotfiles sync --dry-run
+  dotfiles doctor
+  dotfiles doctor --version
+  dotfiles test
+  dotfiles diff
+  dotfiles diff --stat
+  dotfiles install --link
+  dotfiles sync --dry-run
 USAGE
 }
 
@@ -60,7 +71,7 @@ case "$cmd" in
         ;;
     *)
         echo "Unknown command: $cmd" >&2
-        echo "Run './dotfiles help' for usage." >&2
+        echo "Run '$(basename "$0") help' for usage." >&2
         exit 1
         ;;
 esac

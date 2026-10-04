@@ -28,6 +28,11 @@ BACKUP_ROOT="$STATE_DIR/dotfiles/backups"
 # Shared Components
 COMPONENTS="helix fish zellij alacritty"
 
+# Ensure mise finds repository tools even when called outside repo root
+if [ -f "$REPO_DIR/mise.toml" ] && [ -z "${MISE_CONFIG_FILE:-}" ]; then
+    export MISE_CONFIG_FILE="$REPO_DIR/mise.toml"
+fi
+
 # Color support detection (respects NO_COLOR and dumb terminals)
 if [ -t 1 ] && [ -z "${NO_COLOR:-}" ] && [ "${TERM:-dumb}" != "dumb" ]; then
     CLR_RESET='\033[0m'
